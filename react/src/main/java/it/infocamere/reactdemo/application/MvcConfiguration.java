@@ -24,41 +24,21 @@ import it.infocamere.reactdemo.filter.CustomSiteMeshFilter;
 @EnableWebMvc
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
-//    @Override
-//    public void configureViewResolvers(final ViewResolverRegistry registry) {
-//        registry.jsp("/WEB-INF/pages/views/", ".jsp");
-//    }  
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/pages/views/");
-        resolver.setSuffix(".jsp");
-        resolver.setViewClass(JstlView.class);
-        registry.viewResolver(resolver);
-    }
-    @Override
-    public void configureDefaultServletHandling(
-            DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }    
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("/WEB-INF/pages/views/");
+		resolver.setSuffix(".jsp");
+
+		registry.viewResolver(resolver);
+	}
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
     
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-       // builder.serializationInclusion(JsonInclude.Include.NON_NULL);
-       // builder.serializationInclusion(Include.NON_EMPTY);
-        //i campi non annotati sono inseriti indipendendentemente dalla jsonView usata
-        builder.featuresToEnable(MapperFeature.DEFAULT_VIEW_INCLUSION);
-        
-        builder.indentOutput(true).dateFormat(new SimpleDateFormat("dd-MM-yyyy"));
+ 
     
-        converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
-    }
-    
-//    @Bean
-//    public Jackson2ObjectMapperBuilder configureObjectMapper() {
-//        return new Jackson2ObjectMapperBuilder()
-//            .modulesToInstall(Hibernate4Module.class);
-//    }
+
     
     @Bean
 	public FilterRegistrationBean siteMeshFilter() {

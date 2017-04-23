@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
     }
 }
 
@@ -13,29 +14,12 @@ allprojects {
 		apply plugin: 'eclipse-wtp'
 
 
-	//serve per attivare il provided nelle lib
-		configurations {
-	    	provided
-	    	sshAntTask
-		}
-		eclipse.classpath.plusConfigurations += [configurations.provided]
-		configurations.all {
-	    exclude group: 'org.springframework.boot', module: 'logback-classic'
-    		resolutionStrategy {
-    				//force 'org.eclipse.scout.sdk.deps:org.eclipse.core.runtime:3.11.0.v20160603-1336'
-
-		 			//force 'org.eclipse.scout.sdk.deps:org.eclipse.swt.win32.win32.x86:3.105.0.v20160603-0902'
-    				//force 'org.eclipse.scout.sdk.deps:org.eclipse.core.commands:3.8.0.v20160316-1921'
-    				//force 'org.eclipse.scout.sdk.deps:org.eclipse.equinox.common:3.8.0.v20160509-1230'
-
-			}
-		}
 	}
 
 subprojects{
 
 	apply plugin:"java"
-	apply plugin: 'java-library-distribution'
+	
 
 	sourceCompatibility =1.8
 	repositories {
@@ -43,52 +27,24 @@ subprojects{
 		 maven {
             url "http://jasperreports.sourceforge.net/maven2/"
         }
-		 maven {
-            url "http://jaspersoft.artifactoryonline.com/jaspersoft/jaspersoft-repo/"
-        }
-        maven {
-        	url "http://maven.jahia.org/maven2/"
-        }
-		maven {
-        	url "https://maven.repository.redhat.com/ga/"
-        }
-		maven{
-			url "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"
-		}
-		maven{
-			url "https://oss.sonatype.org/content/repositories/appfuse/"
-		}
-		maven{
-			url "http://mavensync.zkoss.org/maven2/"
-		}
+		
   	}
   	dependencies{
-		sshAntTask 'org.apache.ant:ant-jsch:1.7.1', 'jsch:jsch:0.1.29'
 		compile group: 'log4j', name: 'log4j', version: '1.2.17'
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
 		
 		
-			
-		//GSON
-		compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
-		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
-
+	
 
 
 
 
    	}
-   	// sistema di deploy
 
 
-	 ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
-	            classpath: configurations.sshAntTask.asPath)
 
-	 ant.taskdef(name: 'sshexec',
-     		classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
-      		classpath: configurations.sshAntTask.asPath)
 
 
 }
@@ -123,56 +79,25 @@ subprojects{
 
 
 		dependencies{
-		
-		//permette di non restartare a ogni modifica
-			compile("org.springframework.boot:spring-boot-devtools")
+      //permette di non restartare a ogni modifica
+      			compile("org.springframework.boot:spring-boot-devtools")
 
-		
-
-			//spring core
-		//	compile group: 'org.springframework', name: 'spring-context', version: '4.3.4.RELEASE'
-			//per le mail
-		//	compile group: 'org.springframework', name: 'spring-context-support', version: '4.3.4.RELEASE'
-			compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.5.2.RELEASE'
-			  compile("org.springframework.boot:spring-boot-starter-data-jpa")
-			//spring mvc
-		//	compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.4.RELEASE'
-			compile group: 'javax.servlet', name: 'jstl', version: '1.2'
-			
-			//jsr303 validation
-			compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
-			//spring boot
-			  compile("org.springframework.boot:spring-boot-starter-web")
-    		  providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
-    		  compile group: 'javax', name: 'javaee-api', version: '7.0'
-    		  //compile group: 'javax', name: 'javaee-web-api', version: '7.0'
-    		  
+//necessario per jpa con hibernate
+  compile("org.springframework.boot:spring-boot-starter-web")
+  //permette di configurare la servlet in modo da inserire i filtri
+  //per la posizione delle jsp in MvcConfiguration
+  compile("org.apache.tomcat.embed:tomcat-embed-jasper")
+	compile group: 'javax.servlet', name: 'jstl', version: '1.2'  
+  
+  
+  
+  
     		
     		  
 			
 			//sitemesh
 			compile group: 'org.sitemesh', name: 'sitemesh', version: '3.0.1'
 			
-			//servlet container
-			providedRuntime "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-			providedRuntime group: 'org.apache.tomcat', name: 'tomcat-servlet-api', version: "$tomcatVersion"
-			providedRuntime group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
-			providedRuntime group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
-			
-			providedRuntime group: 'org.apache.tomcat', name: 'tomcat-jasper', version: "$tomcatVersion"
-			//compile("org.apache.tomcat.embed:tomcat-embed-jasper:$tomcatVersion")
-			providedRuntime group: 'org.apache.tomcat', name: 'tomcat-jasper-el', version: "$tomcatVersion"
-			providedRuntime group: 'com.sun.el', name: 'el-ri', version: '1.2'
-			
-			
-			
-			//spring transaction
-			compile group: 'org.springframework', name: 'spring-tx', version: '4.3.4.RELEASE'
-			compile group: 'org.springframework', name: 'spring-orm', version: '4.3.4.RELEASE'
-			//compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5'
-            //compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5'
-           
-            
 			//httpclient
 			compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
 			
@@ -185,13 +110,6 @@ subprojects{
 
 
 
-
-		 manifest {
-    
-        attributes 'Implementation-Title': 'react',
-                   'Implementation-Version': '1.0',
-                   'Main-Class': 'it.infocamere.reactdemo.application.Application'
-    	}
 
 
 
@@ -216,34 +134,9 @@ subprojects{
 
 		war {
 			baseName="react"
-	   	}
-	   	
-   	
-   		 	jar{
-	   		baseName="react"
-	   		exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
-
-		    manifest {
-		        attributes 'Main-Class': 'it.infocamere.reactdemo.application..Application',
-		                   'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
-		    }
-		}
-		jar.into('static') {
-    		from('src/main/public')
-		}
-
-  
-  
-		
-		
-		//per il lancio da eclipse e da gradle
+	   	}		
 	
-	}
-springBoot {
-	    mainClass = "it.infocamere.reactdemo.application.Application"
-	}
-	bootRepackage {
-	    mainClass = "it.infocamere.reactdemo.application.Application"
+	
 	}
 
 
