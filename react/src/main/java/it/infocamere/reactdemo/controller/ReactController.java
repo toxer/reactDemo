@@ -36,6 +36,15 @@ public class ReactController {
 		}
 		return "";
 	}
-	
+	@RequestMapping(value = "/table", method = RequestMethod.GET)
+	public String table(HttpServletRequest request, HttpServletResponse response, Model model) {
+		try {
+			
+			return "table";
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		return "";
+	}
 	
 }
